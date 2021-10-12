@@ -1,0 +1,501 @@
+/*
+ * CSS for jsPsych experiments.
+ *
+ * This stylesheet provides minimal styling to make jsPsych
+ * experiments look polished without any additional styles.
+ */
+@import url(https://fonts.googleapis.com/css?family=Open+Sans:400italic,700italic,400,700);
+
+/* Parameters */
+:root {
+  --frame-thickness: 30px;
+  --card-width: 105px;
+  --card-height: 150px;
+  --initial-card-placement: 130%;
+  --card-incrememnt: 20%;
+}
+
+/* Insturctions */
+div.instructions {
+  width: 700px;
+  text-align: left;
+}
+
+div.jspsych-survey-text-question {
+  width: 700px;
+  text-align: left;
+}
+
+
+/* Inner table */
+table.inner {
+  height: 413px;
+  position: absolute;
+  top: 50%;
+  transform: translate(0, -50%);
+}
+
+td.inner {
+  box-sizing: border-box;
+  width: 420px;
+  padding: calc(var(--frame-thickness) + 4.5px);
+}
+
+td.inner.L {
+  padding-right: calc(var(--frame-thickness) + 20px);
+  padding-left: var(--frame-thickness);
+}
+
+td.inner.R {
+  padding-right: var(--frame-thickness);
+  padding-left: calc(var(--frame-thickness) + 20px);
+}
+
+div.inner {
+  background: grey;
+  width: 100%;
+  height: 100%;
+  position: relative;
+}
+
+/* Card Decks */
+table.deck {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+table.deck.feedback {
+  /* width: 320px; */
+}
+
+div.table_icon.feedback {
+  height: 500px;
+}
+
+div.table_icon.feedback>img {
+  width: 250px;
+  height: 500px;
+}
+
+div.feedback.top_deck{
+  position: relative;
+  top: 25%;
+  left: 18%;
+}
+
+div.feedback.bottom_deck{
+  position: relative;
+  top: 75%;
+  left: 18%;
+}
+
+
+div.inner.icon.feedback {
+  width: calc(250px - 2 * var(--frame-thickness));
+  height: calc(500px - 2 * var(--frame-thickness));
+  position: absolute;
+  z-index: 4;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+
+div.feedback_table{
+  position: absolute;
+}
+
+div.deck-feedback-stimulus{
+  position: relative;
+  height: 500px;
+  width: 900px;
+}
+
+
+td.deck {
+  padding: 20px;
+  min-width: 117px;
+}
+
+div.card {
+  object-fit: cover;
+  border-radius: 6%;
+  height: var(--card-height);
+  width: var(--card-width);
+  display: block;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15), inset 0px 0px 0px 1.2px;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+  background-repeat: no-repeat;
+  background-color: white;
+  background-position: center;
+  border: 6px solid #FFFFFF;
+}
+
+/* Tables */
+div.table_icon {
+  height: 400px;
+}
+
+div.table_icon>img {
+  width: 400px;
+  height: 400px;
+}
+
+div.inner.icon {
+  width: calc(400px - 2 * var(--frame-thickness));
+  height: calc(400px - 2 * var(--frame-thickness));
+  position: absolute;
+  z-index: 4;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+td.tableL>img, td.tableR>img, td.structure-quiz>img {
+  width: 400px;
+  height: 400px;
+  vertical-align: middle;
+}
+
+td.memory-quiz>img {
+  width: 200px;
+  height: 200px;
+  vertical-align: middle;
+  -webkit-user-drag: none;
+}
+
+td.memory-quiz{
+  position: relative;
+  padding: 10px;
+}
+
+
+td.structure-quiz {
+  position: relative;
+  padding: 30px;
+}
+
+td.tableL {
+  padding-right: 20px;
+  position: relative;
+}
+
+td.tableR {
+  padding-left: 20px;
+  position: relative;
+}
+
+div.hidden {
+  visibility: hidden;
+}
+
+img.hidden {
+  visibility: hidden;
+}
+
+/* Fixation */
+#fixation {
+  font-size: 50px;
+  font-weight: 600;
+}
+
+div.second_fixation {
+  position: absolute;
+  top: 50%;
+  z-index: 2;
+  transform: translate(-50%, -50%);
+}
+
+div.second_fixation.L {
+  left: calc(50% - 10px);
+}
+
+div.second_fixation.R {
+  left: calc(50% + 10px);
+}
+
+/* Card flip css */
+.flip-container {
+  perspective: 1000px;
+}
+
+/* flip the pane when hovered */
+.flip-container.flip .flipper {
+  transform: rotateY(180deg);
+}
+
+.flipper {
+  transition: 0.6s;
+  transform-style: preserve-3d;
+  position: relative;
+}
+
+/* hide back of pane during swap */
+.front, .back {
+  backface-visibility: hidden;
+}
+
+/* front pane, placed above back */
+.front {
+  z-index: 200;
+  /* for firefox 31 */
+  transform: rotateY(0deg);
+  position: absolute;
+}
+
+/* back, initially hidden pane */
+div.back {
+  transform: rotateY(180deg);
+  background-position: left top, right bottom;
+  background-size: 20px;
+  box-shadow: 1px 1px 1px rgba(0, 0, 0, 0.15);
+}
+
+/* card locations */
+div.flip-container.rate.cm1 {
+  left: calc(var(--initial-card-placement));
+  transform: translate(0, -50%) !important;
+  z-index: 1 !important;
+}
+
+div.flip-container.rate.cm2 {
+  left: calc(var(--initial-card-placement) + var(--card-incrememnt));
+  transform: translate(0, -50%) !important;
+  z-index: 2 !important;
+}
+
+div.flip-container.rate.cm3 {
+  left: calc(var(--initial-card-placement) + 2 * var(--card-incrememnt));
+  transform: translate(0, -50%) !important;
+  z-index: 3 !important;
+}
+
+div.flip-container.rate.cm4 {
+  left: calc(var(--initial-card-placement) + 3 * var(--card-incrememnt));
+  transform: translate(0, -50%) !important;
+  z-index: 4 !important;
+}
+
+div.flip-container.rate.cm5 {
+  left: calc(var(--initial-card-placement) + 4 * var(--card-incrememnt));
+  transform: translate(0, -50%) !important;
+  z-index: 5 !important;
+}
+
+div.flip-container.rate.cm6 {
+  left: calc(var(--initial-card-placement) + 5 * var(--card-incrememnt));
+  transform: translate(0, -50%) !important;
+  z-index: 6 !important;
+}
+
+div.flip-container.rate.cm7 {
+  left: calc(var(--initial-card-placement) + 6 * var(--card-incrememnt));
+  transform: translate(0, -50%) !important;
+  z-index: 7 !important;
+}
+
+div.flip-container.rate.cm8 {
+  left: calc(var(--initial-card-placement) + 7 * var(--card-incrememnt));
+  transform: translate(0, -50%) !important;
+  z-index: 8 !important;
+}
+
+
+div.flip-container.rate.cm9 {
+  left: calc(var(--initial-card-placement) + 8 * var(--card-incrememnt));
+  transform: translate(0, -50%) !important;
+  z-index: 9 !important;
+}
+
+
+div.flip-container.rate.cm10 {
+  left: calc(var(--initial-card-placement) + 9 * var(--card-incrememnt));
+  transform: translate(0, -50%) !important;
+  z-index: 10 !important;
+}
+
+
+div.flip-container.rate.dm0 {
+  transform: translate(0, -50%) !important;
+}
+
+div.flip-container.rate.dm1 {
+  left: 81px;
+  transform: translate(0, -50%) !important;
+  z-index: 8 !important;
+}
+
+div.flip-container.rate.dm2 {
+  left: 161px;
+  transform: translate(0, -50%) !important;
+  z-index: 9 !important;
+}
+
+div.flip-container.rate.dm3 {
+  left: 242px;
+  transform: translate(0, -50%) !important;
+  z-index: 10 !important;
+}
+
+div.flip-container.rate.dm4 {
+  left: 322px;
+  transform: translate(0, -50%) !important;
+  z-index: 11 !important;
+}
+
+div.flip-container.rate.dm5 {
+  left: 403px;
+  transform: translate(0, -50%) !important;
+  z-index: 12 !important;
+}
+
+div.flip-container.rate.dm6 {
+  left: 483px;
+  transform: translate(0, -50%) !important;
+  z-index: 13 !important;
+}
+
+div.flip-container.rate.dm7 {
+  left: 564px;
+  transform: translate(0, -50%) !important;
+  z-index: 14 !important;
+}
+
+div.flip-container.rate.B {
+  top: 70%
+}
+
+div.flip-container.rate.T {
+  top: 30%
+}
+
+
+div.jspsych-survey-multi-choice-question {
+  max-width: 750px;
+}
+
+/* New custom css above this line */
+html {
+  background-color: grey;
+}
+
+.jspsych-display-element {
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+}
+
+.jspsych-display-element:focus {
+  outline: none;
+}
+
+.jspsych-content-wrapper {
+  display: flex;
+  margin: auto;
+  flex: 1 1 100%;
+  width: 100%;
+}
+
+.jspsych-content {
+  max-width: 95%;
+  /* this is mainly an IE 10-11 fix */
+  text-align: center;
+  margin: auto;
+  /* this is for overflowing content */
+}
+
+.jspsych-top {
+  align-items: flex-start;
+}
+
+.jspsych-middle {
+  align-items: center;
+}
+
+/* fonts and type */
+.jspsych-display-element {
+  font-family: 'Open Sans', 'Arial', sans-serif;
+  font-size: 18px;
+  line-height: 1.6em;
+}
+
+/* Form elements like input fields and buttons */
+.jspsych-display-element input[type="text"] {
+  font-family: 'Open Sans', 'Arial', sans-serif;
+  font-size: 14px;
+}
+
+/* borrowing Bootstrap style for btn elements, but combining styles a bit */
+.jspsych-btn {
+  display: inline-block;
+  padding: 6px 12px;
+  margin: 0px;
+  font-size: 14px;
+  font-weight: 400;
+  font-family: 'Open Sans', 'Arial', sans-serif;
+  cursor: pointer;
+  line-height: 1.4;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: middle;
+  background-image: none;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: #333;
+  background-color: #fff;
+  border-color: #ccc;
+}
+
+.jspsych-btn:hover {
+  background-color: #ddd;
+  border-color: #aaa;
+}
+
+.jspsych-btn:disabled {
+  background-color: #eee;
+  color: #aaa;
+  border-color: #ccc;
+  cursor: not-allowed;
+}
+
+/* jsPsych progress bar */
+#jspsych-progressbar-container {
+  color: #555;
+  border-bottom: 1px solid #dedede;
+  background-color: #f9f9f9;
+  margin-bottom: 1em;
+  text-align: center;
+  padding: 8px 0px;
+  width: 100%;
+  line-height: 1em;
+}
+
+#jspsych-progressbar-container span {
+  font-size: 14px;
+  padding-right: 14px;
+}
+
+#jspsych-progressbar-outer {
+  background-color: #eee;
+  width: 50%;
+  margin: auto;
+  height: 14px;
+  display: inline-block;
+  vertical-align: middle;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+#jspsych-progressbar-inner {
+  background-color: #aaa;
+  width: 0%;
+  height: 100%;
+}
+
+/* Control appearance of jsPsych.data.displayData() */
+#jspsych-data-display {
+  text-align: left;
+}

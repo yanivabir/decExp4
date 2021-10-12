@@ -1,0 +1,82 @@
+<!doctype html>
+<!--
+  The consent.html displays the text of your IRB-approved
+  consent form.  Even if you are not required to provide
+  a consent form, it is helpful to use this form to
+  describe what people can do if an error comes up, etc...
+
+-->
+<html>
+
+<head>
+  <title>Psychology Study - Informed Consent Form</title>
+  <link rel=stylesheet href="/static/css/bootstrap.min.css" type="text/css">
+  <link rel=stylesheet href="/static/css/style.css" type="text/css">
+  <script type="text/javascript">
+    function onexit() {
+      self.close(); // no harm, no foul here
+    }
+  </script>
+</head>
+
+<body>
+  <div id="container-consent">
+    <div id="consent">
+      <h1>Studies of Learning, Memory and Decision Making</h1>
+      <h1>Informed Consent Form</h1>
+      <hr>
+      <div class="legal well">
+        <p>
+          We invite you to participate in a research study investigating learning, memory and decision making. In this study, you will play computer games, answer questionnaires and/or take standardized cognitive tests.
+        </p>
+        <p>
+          Your participation in this study is entirely voluntary. You have the right to withdraw from the study at any time (even after you sign this consent form) or refuse to participate in any part of the study.
+        </p>
+        <h3>Risks and Benefits</h3>
+        <p>There are neither any known risks nor any known benefits associated with this study.</p>
+        <h3>Compensation</h3>
+        <p>
+          Participants will be compensated at a rate of $3.60 for each session, plus a performance-based bonus of up to $4.5 on the first session, and $6 on later sessions, as stipulated on Amazon Mechanical Turk. Additionally, participants will be paid a $2 bonus for completing the entire four sessions.
+        </p>
+        <h3>Contact Information</h3>
+        <p>
+          If you have any questions or concerns about this study, please contact any member of the research team, including the Principal Investigator, Dr. Daphna Shohamy (212-854-7560).
+        </p>
+        <p>
+          If at any time you have questions or concerns about your rights or welfare as a research subject, please contact Columbia University - Morningside Institutional Review Board. The Institutional Review Board is a committee organized to protect the rights and welfare of human subjects involved in research and operates independent of this research team.
+        </p>
+        <p>
+          Columbia University - Morningside Institutional Review Board<br>
+          615 West 131st Street<br>
+          212-851-7040
+        </p>
+        <h3>Mental Health Resources</h3>
+        <p> Your participation in this study will not include psychological counselling. In the event you seek such services, please contact the center below:<br>
+          National Hopeline Network 1-800-784-2433
+          <p>
+        <button type="button" class="btn btn-default btn-sm" onClick="window.print();">
+          <span class="glyphicon glyphicon-print"></span> Print a copy of this
+        </button>
+      </div>
+
+      <hr>
+      <h4>By clicking "YES", you indicate that, having read and understood the information provided, you have decided to participate.</h4>
+      <br>
+
+      <center>
+        <button type="button" class="btn btn-primary btn-lg" onClick="window.location='/templates/exp1.html' + window.location.search">
+          <span class="glyphicon glyphicon-ok"></span> Yes
+        </button>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <button type="button" class="btn btn-danger btn-lg" onClick="onexit()">
+          <span class="glyphicon glyphicon-ban-circle"></span> No thanks, I do not want to do this HIT
+        </button>
+      </center>
+
+    </div>
+  </div>
+</body>
+
+</html>

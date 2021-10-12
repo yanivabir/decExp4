@@ -1,0 +1,110 @@
+<!doctype html>
+<html>
+
+<head>
+	<title>Psychology Study</title>
+	<link rel=stylesheet href="/static/css/bootstrap.min.css" type="text/css">
+	<style>
+		/* these tyles need to be defined locally */
+
+		body {
+			padding: 0px;
+			margin: 0px;
+			background-color: white;
+			color: black;
+			font-weight: 300;
+			font-size: 13pt;
+		}
+
+		#landinglogo {
+			float: right;
+			width: 140px;
+			padding: 2px;
+			border: 1px solid #ccc;
+		}
+
+		#container-landing {
+			position: absolute;
+			top: 0px;
+			/* Header Height */
+			bottom: 0px;
+			/* Footer Height */
+			left: 0px;
+			right: 0px;
+			padding: 100px;
+			padding-top: 5%;
+			border: 18px solid #f3f3f3;
+			background: white;
+		}
+	</style>
+</head>
+
+<body>
+	<div id="container-landing">
+
+		<div id="landing">
+			<div class="row">
+				<div class="col-xs-2">
+					<!-- REPLACE THE LOGO HERE WITH YOUR  UNIVERSITY, LAB, or COMPANY -->
+
+				</div>
+				<div class="col-xs-10">
+
+					<h1>Welcome back!</h1>
+					<p>
+						By clicking the following URL link, you will be taken to the study, including a reminder of the instructions. Before doing so, you must confirm the following:
+					</p>
+					<div class="alert alert-warning">
+						<b>Warning</b>: Please disable pop-up blockers before continuing.
+						<br> Please close all other browser windows and applications, and plug in if you're using a laptop computer. Images in this study will not display properly otherwise.
+						<br>
+						<p>
+							<input type="checkbox" id="close_windows_checkbox" /> I closed all other windows and tabs.
+						</p>
+					</div>
+					<div class="alert alert-warning">
+						Please make sure you are performing this task in a quiet room, without any distractions.
+						<br>
+						<p>
+							<input type="checkbox" id="quiet_checkbox" /> I am in a quiet environment.
+						</p>
+						<br>
+						Please put on your reading glasses if you need them.
+						<br>
+						<p>
+							<form action="" id="glasses_form">
+								<input type="radio" name="glasses" value='no_need'> I don't need reading glasses<br>
+								<input type="radio" name="glasses" value='have'> I need reading glasses and have them on<br>
+								<input type="radio" name="glasses" value = 'fail'> I need reading glasses and don't have them on
+							</form>
+						</p>
+					</div>
+
+					<button type="button" class="btn btn-primary btn-lg" onClick="openwindow();">
+								  Begin Study
+								</button>
+				</div>
+			</div>
+		</div>
+
+		<script>
+			function openwindow() {
+				var safari = navigator.userAgent.indexOf('Safari') != -1 && navigator.userAgent.indexOf('Chrome') == -1;
+				var otherWin = document.getElementById('close_windows_checkbox')
+				var quiet = document.getElementById('quiet_checkbox')
+				var glasses = document.getElementsByName('glasses')[0].checked || document.getElementsByName('glasses')[1].checked
+				if (!safari) {
+					if (otherWin.checked && quiet.checked && glasses) {
+						popup = window.open('/templates/exp2.html' + window.location.search, 'Popup', 'toolbar=no,location=no,status=no,menubar=no,scrollbars=yes,resizable=no,width=' + 1024 + ',height=' +
+							768 + '');
+					} else {
+						alert("You cannot proceed without affirming these statements. If they don't apply to you, you will not be able to participate in this experiment. Please return the HIT to Amazon.");
+					}
+				} else {
+					alert("It seems that you are using Safari as your browser. This HIT is not compatible with Safari. Please use Chrome or Firefox instead");
+				}
+			}
+		</script>
+</body>
+
+</html>
