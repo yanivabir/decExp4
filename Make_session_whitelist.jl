@@ -2,16 +2,15 @@
 println("\n\n\n Analysis begins:")
 # Criteria
 deck_ratio_deviation = 0.3
-memory_score = 0.8
 reward = 0.25
 
 # Load libraries
-using CSV, DataFrames, Statistics, VegaLite
+using CSV, DataFrames, Statistics, Distributions
 
 #---- Get data
 date = ""
-sess = "4"
-subdir = "now"
+sess = "1"
+subdir = "data"
 
 # List relevant files
 files = filter(x -> occursin(date, x) &&
@@ -21,13 +20,13 @@ files = filter(x -> occursin(date, x) &&
     occursin("csv", x), readdir("../Data/"* subdir* "/"))
 
 # Open each file, and then vcat them together
-dat = reduce(vcat, map(x -> CSV.read("../Data/" * subdir * "/" * x), files))
+dat = ((x -> DataFrame!(CSV.File("../Data/" * subdir * "/" * x))).(files)) |> d -> vcat(d..., cols = :union)
 
 #---- Exclude Ps who didn't finish
 
-quality = by(dat, :PID, n_w = :n_warnings => maximum) # Summarize warnings each participant recieved
+quality = combine(groupby(dat, :PID), :n_warnings => maximum => :n_w) # Summarize warnings each participant recieved
 
-kick = by(dat, :PID, kick = :category => x -> "kick-out" in x)
+kick = combine(groupby(dat, :PID), :category => (x -> "kick-out" in x) => :kick)
 filter!(x -> !ismissing(x.kick) && x.kick == true, kick)
 
 filter!(r -> !(r.PID in kick.PID), dat) # Filter data according to quality table
@@ -37,8 +36,8 @@ println(kick.PID)
 #---- Prepare data
 # Remove instructions and training
 a = filter(r -> r.trial_type == "structure-quiz", dat) |>  # Find structure-quiz as beginning of interesting data
-    x -> by(x, [:PID, :sess], start_trial = :trial_index => minimum) # Find fist appearance of
-dat = join(dat, a, on = [:PID, :sess]) |> # Join with data
+    x -> combine(groupby(x, [:PID, :sess]), :trial_index => minimum => :start_trial) # Find fist appearance of
+dat = innerjoin(dat, a, on = [:PID, :sess]) |> # Join with data
     x -> filter!(r -> r.trial_index >= r.start_trial, x) # filter data
 
 # Deal with missing block number data
@@ -66,7 +65,7 @@ dat.chosen_deck =
 
 #---- Compute bonus payments
 bonus = filter(x -> x.trial_type == "test-feedback", dat) |>
-    x -> by(x, :PID, correct = :correct => x -> sum((x .== "true") .| (x .== true)))
+    x -> combine(groupby(x, :PID), :correct => (x -> sum((x .== "true") .| (x .== true))) => :correct)
 
 bonus.reward = (x -> round(x, digits = 2)).(bonus.correct .* reward)
 
@@ -79,19 +78,12 @@ memory = memory[:, filter(x -> !isequal(unique(memory[x]),
     [missing]), names(memory))] # Remove empty variables
 memory.correct = memory.chosen_table .== memory.answer # Compute correct
 
-# Plot memory performance
-# p = memory |> @vlplot(:bar,
-#     x = "block:o",
-#     y = "count(correct)",
-#     fill = "correct:n",
-#     row = "sess:o",
-#     column = "PID:n")
-
-memory = by(memory, [:PID], correct = :correct => mean)
+memory = combine(groupby(memory, [:PID]), :correct => sum => :correct, :correct => length => :n)
+memory.p = 1 .- cdf.(Binomial.(memory.n, 0.25), memory.correct)
 
 pre = nrow(memory)
-mem_exc = filter(x -> x.correct < memory_score, memory)
-filter!(x -> x.correct >= memory_score, memory)
+mem_exc = filter(x -> x.p > 0.05, memory)
+filter!(x -> x.p < 0.05, memory)
 
 println("\nRemoved ", pre - nrow(memory), " participants for memory score <=.8")
 println(mem_exc.PID)
