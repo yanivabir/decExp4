@@ -9,8 +9,8 @@ using CSV, DataFrames, Statistics, Distributions
 
 #---- Get data
 date = ""
-sess = "1"
-subdir = "data"
+sess = "4"
+subdir = "raw"
 
 # List relevant files
 files = filter(x -> occursin(date, x) &&
@@ -74,7 +74,7 @@ println(sort(bonus, [:reward]))
 
 #---- Exclude according to memory quiz
 memory = filter(x -> x.trial_type == "memory-quiz", dat) # Select trials
-memory = memory[:, filter(x -> !isequal(unique(memory[x]),
+memory = memory[:, filter(x -> !isequal(unique(memory[!, x]),
     [missing]), names(memory))] # Remove empty variables
 memory.correct = memory.chosen_table .== memory.answer # Compute correct
 
@@ -85,9 +85,9 @@ pre = nrow(memory)
 mem_exc = filter(x -> x.p > 0.05, memory)
 filter!(x -> x.p < 0.05, memory)
 
-println("\nRemoved ", pre - nrow(memory), " participants for memory score <=.8")
+println("\nRemoved ", pre - nrow(memory), " participants for low memory score")
 println(mem_exc.PID)
-println("\nAverage memory score remaining: ", mean(memory.correct))
+println("\nAverage memory score remaining: ", mean(memory.correct ./ memory.n))
 
 dat = filter(x -> x.PID in memory.PID, dat) # Exclude from data
 
@@ -114,7 +114,7 @@ end
 learn = learn[filter(x -> !(x in bad_indx), 1:nrow(learn)), :]
 
 # Remove empty columns
-learn = learn[:, filter(x -> !isequal(unique(learn[x]), [missing]), names(learn))]
+learn = learn[:, filter(x -> !isequal(unique(learn[!, x]), [missing]), names(learn))]
 
 # Make RT numeric, on seconds scale
 learn.rt = (x -> parse(Float64, x)).(learn.rt) / 1000
@@ -124,7 +124,7 @@ wl = filter(x -> x.category == "object_choice", learn)
 
 rename!(wl, :rt => :table_rt)
 
-wl.rt = 0.
+wl[!, :rt] .= 0.
 
 for ii in 1:nrow(wl)
     id = wl[ii, :PID]
@@ -136,7 +136,7 @@ for ii in 1:nrow(wl)
     cand = filter(x -> x.PID == id && x.sess == sess && x.block == bl && x.trial_index == ind + 3, learn)
     if nrow(cand) > 0
         for jj in [:LCard, :RCard, :rt, :chosen_deck_side, :chosen_deck, :reward]
-            wl[ii, jj] = cand[jj][1]
+            wl[ii, jj] = cand[!, jj][1]
         end
     end
 end
@@ -146,33 +146,23 @@ rename!(wl, :rt => :deck_rt);
 wl.trial = reduce(vcat, [1:nrow(x) for x in groupby(wl, [:PID, :sess, :block])])
 
 # Count which deck was chosen
-decks = by(wl, [:PID, :sess, :block, :chosen_object],
-    min_deck = :chosen_deck => x -> minimum(skipmissing(x)))
-wl = join(wl, decks, on = [:PID, :sess, :block, :chosen_object])
+decks = combine(groupby(wl, [:PID, :sess, :block, :chosen_object]),
+    :chosen_deck => (x -> minimum(skipmissing(x))) => :min_deck)
+wl = innerjoin(wl, decks, on = [:PID, :sess, :block, :chosen_object])
 wl.chosen_deck_N = [x.chosen_deck == x.min_deck ? 1 : 2 for x in eachrow(wl)]
 
 wl.running_table_n = [x.chosen_object + 4 * (x.block) for x in eachrow(wl)]
 
-p2 = wl |> @vlplot(:bar, x = {"running_table_n:o", title = "Table"},
-    y = "count()",
-    color = {"chosen_deck_N:n", legend = nothing},
-    column = {"PID:n", title = "Participant"},
-    row = {"sess:n", title = "Session"},
-    title = "Deck choice distribution")
-
 # For each subject and game, compute the absolute deviation from choosing both decks 50:50
-deck_s = by(wl, [:PID, :running_table_n],
-    ratio = :chosen_deck_N => x -> abs(0.5 - mean(x .== 1)),
-    n_trials = :chosen_deck_N => length)
+deck_s = combine(groupby(wl, [:PID, :running_table_n]),
+    :chosen_deck_N => (x -> abs(0.5 - mean(x .== 1))) => :ratio,
+    :chosen_deck_N => length => :n_trials)
 
 # Multiply each table's ratio by the number of trials for that table
 deck_s.wrat = deck_s.ratio .* deck_s.n_trials
 
-# Split by subject
-deck_s = groupby(deck_s, :PID)
-
 # Compute weighted average
-deck_s = DataFrame((x -> (PID = unique(x.PID)[1], wrat = sum(x.wrat) ./ sum(x.n_trials))).(deck_s))
+deck_s = combine(groupby(deck_s, :PID), [:wrat, :n_trials] => ((a,b) -> sum(a) / sum(b)) => :wrat)
 
 # Remove subjects by exclusion criterion
 pre = nrow(deck_s)
