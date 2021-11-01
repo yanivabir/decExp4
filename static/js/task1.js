@@ -1,3 +1,4 @@
+// Comment for git
 // Parameters
 var n_training = 20, // N of training trials
   n_tables = 4, // Number of tables per game
