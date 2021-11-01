@@ -9,7 +9,7 @@ using CSV, DataFrames, Statistics, Distributions
 
 #---- Get data
 date = ""
-sess = "4"
+sess = "3"
 subdir = "raw"
 
 # List relevant files
@@ -71,6 +71,9 @@ bonus.reward = (x -> round(x, digits = 2)).(bonus.correct .* reward)
 
 println("\nBonuses:")
 println(sort(bonus, [:reward]))
+if subdir != "raw"
+    CSV.write("../Data/"* subdir* "/bonuses.csv", sort(bonus, [:reward]))
+end
 
 #---- Exclude according to memory quiz
 memory = filter(x -> x.trial_type == "memory-quiz", dat) # Select trials
@@ -187,4 +190,6 @@ end
 future = filter(x -> completed_next(x), unique(dat.PID))
 
 println("\nPIDs for next session:")
-(x -> println(x)).(filter(x -> !(x in future),unique(dat.PID)))
+next_PIDs = filter(x -> !(x in future),unique(dat.PID))
+println("\nn=" * string(length(next_PIDs)))
+(x -> println(x)).(next_PIDs)
