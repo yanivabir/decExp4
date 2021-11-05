@@ -1,5 +1,6 @@
 #---- Set up
 println("\n\n\n Analysis begins:")
+cd("/Users/yanivabir/Files/ShohamyLab/DecisionToExplore/exp4_replication/decExp4")
 # Criteria
 deck_ratio_deviation = 0.3
 reward = 0.25
@@ -8,9 +9,9 @@ reward = 0.25
 using CSV, DataFrames, Statistics, Distributions
 
 #---- Get data
-date = ""
+date = r"2021-11-04|2021-11-05"
 sess = "4"
-subdir = "raw"
+subdir = "now"
 
 # List relevant files
 files = filter(x -> occursin(date, x) &&
@@ -68,10 +69,15 @@ bonus = filter(x -> x.trial_type == "test-feedback", dat) |>
     x -> combine(groupby(x, :PID), :correct => (x -> sum((x .== "true") .| (x .== true))) => :correct)
 
 bonus.reward = (x -> round(x, digits = 2)).(bonus.correct .* reward)
+if sess == "4"
+    bonus.reward = bonus.reward .+ 2
+end
 
 println("\nBonuses:")
 println(sort(bonus, [:reward]))
-
+if subdir != "raw"
+    CSV.write("../Data/" * subdir * "/bonus.csv", sort(bonus, [:reward])[!, [:PID, :reward]], header = false)
+end
 #---- Exclude according to memory quiz
 memory = filter(x -> x.trial_type == "memory-quiz", dat) # Select trials
 memory = memory[:, filter(x -> !isequal(unique(memory[!, x]),
@@ -186,5 +192,9 @@ end
 
 future = filter(x -> completed_next(x), unique(dat.PID))
 
+println("\nValid Ps this session: n=", length(unique(dat.PID)))
+
 println("\nPIDs for next session:")
-(x -> println(x)).(filter(x -> !(x in future),unique(dat.PID)))
+next = filter(x -> !(x in future),unique(dat.PID))
+println("\nn=", length(next))
+(x -> println(x)).(next)
