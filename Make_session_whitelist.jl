@@ -9,9 +9,11 @@ reward = 0.25
 using CSV, DataFrames, Statistics, Distributions
 
 #---- Get data
-date = r"2021-11-04|2021-11-05"
+date = r"2021-11-12|2021-11-13"
 sess = "4"
 subdir = "now"
+println("\n Session #: ", sess)
+
 
 # List relevant files
 files = filter(x -> occursin(date, x) &&
